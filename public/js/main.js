@@ -89,6 +89,8 @@ function createConnection() {
   $('.navbar-toggle').trigger('click');
   localuser = document.getElementById("userId").value;
   if (room !== '') {
+    room = document.getElementById("roomId").value;
+    alert("Joined room"+room);
     socket.emit('create or join', room);
   }
   navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;

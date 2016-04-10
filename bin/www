@@ -16,12 +16,6 @@ var port = normalizePort(process.env.PORT || '4000');
 app.set('port', port);
 
 /**
- * Create HTTP server.
- */
-
-var server = http.createServer(app);
-
-/**
  * Listen on provided port, on all network interfaces.
  */
 var server = http.createServer(app);
@@ -31,21 +25,20 @@ server.listen(app.get('port'), function(){
 });
 
 
-var static = require('node-static');
-var http = require('http');
-var file = new(static.Server)();
-var server  = http.createServer(function(req, res) {
-    file.serve(req, res);
-}).listen(process.env.PORT || 3000);
 
 io.sockets.on('connection', function(socket) {
 
     socket.on('disconnect', function(){
     console.log('user disconnected');
-    console.log(socket);
-    socket.leave(socket.room);
+      if (io.sockets.sockets[socket.id]) {
+      io.sockets.sockets[socket.id].disconnect();
+      }
     });
 
+    socket.on('close',function(){
+      socket.emit("disconnetUser");
+    }) 
+    
     socket.on('message', function(message) {
         socket.broadcast.emit('message', message);
     });
@@ -74,11 +67,6 @@ io.sockets.on('connection', function(socket) {
     });
 
 });
-
-
-
-
-
 
 
 server.listen(port);
